@@ -409,13 +409,22 @@ pnpm backend:test
 
 ## 🤖 AI Assistant Usage
 
-This project was built with assistance from **Claude (Anthropic — claude.ai)** for:
+### AI Tools Used
 
-- Initial project structure and package setup prompts
+| Tool | Purpose |
+|---|---|
+| **Claude (Anthropic — claude.ai)** | Architecture decisions, prompts, debugging, README |
+| **Antigravity IDE (v2.1.4)** | AI-powered code generation inside the editor |
+
+### What AI was used for
+
+- Initial project structure and package setup
 - Boilerplate code generation for entities, repositories, and services
 - Debugging test failures and dependency issues
 - Docker and CI configuration templates
 - README structure
+
+### What is my own work
 
 All architectural decisions, code review, debugging logic, and understanding of the generated code are my own. I can explain every part of this codebase in detail.
 
