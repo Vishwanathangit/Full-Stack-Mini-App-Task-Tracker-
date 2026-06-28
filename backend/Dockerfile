@@ -1,19 +1,12 @@
-FROM eclipse-temurin:21-jdk-alpine
-
-# Set the working directory
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine as builder
 WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
-# Copy the packaged jar file into the container
-COPY target/*.jar app.jar
-
-# Expose port 8080
+# Run stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Define environment variables with default values
-ENV JWT_SECRET=your-super-secret-key-change-this-in-production
-ENV JWT_EXPIRATION=86400000
-ENV CORS_ALLOWED_ORIGINS=http://localhost:5173
-ENV DB_PATH=tasktracker.db
-
-# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
