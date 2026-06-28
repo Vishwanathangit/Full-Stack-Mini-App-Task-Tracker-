@@ -14,3 +14,9 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
 export const logout = async (): Promise<void> => {
   await api.post('/api/auth/logout');
 };
+
+export const getMe = async (): Promise<AuthResponse> => {
+  const response = await api.get<AuthResponse>('/api/auth/me');
+  return response.data;
+};
+

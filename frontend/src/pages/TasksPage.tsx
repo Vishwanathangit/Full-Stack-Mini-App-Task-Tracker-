@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTaskStore } from '../store/taskStore';
 import { useTasks } from '../hooks/useTasks';
 import { useProjects } from '../hooks/useProjects';
@@ -14,7 +15,8 @@ import { Button } from '../components/ui/button';
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TasksPage() {
-  const { tasks, filters, isLoading, error, setFilters } = useTaskStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { tasks, filters, isLoading, error, setFilters, resetFilters } = useTaskStore();
   const { fetchTasks, createTask, updateTask, deleteTask, isActionLoading } = useTasks();
   const { projects, fetchProjects } = useProjects();
   
@@ -24,9 +26,38 @@ export default function TasksPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
 
+  // 1. Sync URL parameters to Zustand store on initial load
   useEffect(() => {
-    fetchTasks();
-  }, [filters, fetchTasks]);
+    const status = searchParams.get('status') || '';
+    const priority = searchParams.get('priority') || '';
+    const sortBy = searchParams.get('sortBy') || 'createdAt';
+    const sortDir = (searchParams.get('sortDir') as 'asc' | 'desc') || 'desc';
+    const page = parseInt(searchParams.get('page') || '0', 10);
+    const size = parseInt(searchParams.get('size') || '10', 10);
+
+    setFilters({
+      status: status as any,
+      priority: priority as any,
+      sortBy,
+      sortDir,
+      page,
+      size,
+    });
+  }, [setFilters]);
+
+  // 2. Fetch tasks and sync Zustand store back to URL parameters whenever filters change
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (filters.status) params.status = filters.status;
+    if (filters.priority) params.priority = filters.priority;
+    if (filters.sortBy && filters.sortBy !== 'createdAt') params.sortBy = filters.sortBy;
+    if (filters.sortDir && filters.sortDir !== 'desc') params.sortDir = filters.sortDir;
+    if (filters.page) params.page = filters.page.toString();
+    if (filters.size && filters.size !== 10) params.size = filters.size.toString();
+
+    setSearchParams(params, { replace: true });
+    fetchTasks(filters);
+  }, [filters, fetchTasks, setSearchParams]);
 
   useEffect(() => {
     fetchProjects();
@@ -83,6 +114,7 @@ export default function TasksPage() {
       <TaskFilters
         filters={filters}
         onChange={(newFilters) => setFilters(newFilters)}
+        onReset={resetFilters}
       />
 
       {error && <ErrorMessage message={error} />}

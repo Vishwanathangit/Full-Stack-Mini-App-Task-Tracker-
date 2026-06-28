@@ -33,6 +33,7 @@ export function TaskForm({ task, projects, onSubmit, onCancel, isLoading = false
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -44,6 +45,10 @@ export function TaskForm({ task, projects, onSubmit, onCancel, isLoading = false
       projectId: '',
     },
   });
+
+  const statusValue = watch('status');
+  const priorityValue = watch('priority');
+  const projectIdValue = watch('projectId');
 
   useEffect(() => {
     if (task) {
@@ -114,7 +119,7 @@ export function TaskForm({ task, projects, onSubmit, onCancel, isLoading = false
           <label htmlFor="status" className="block text-sm font-medium text-text-secondary mb-1.5">
             Status *
           </label>
-          <Select id="status" {...register('status')} disabled={isLoading}>
+          <Select id="status" {...register('status')} value={statusValue} disabled={isLoading}>
             <option value={TaskStatus.TODO}>To Do</option>
             <option value={TaskStatus.DOING}>In Progress</option>
             <option value={TaskStatus.DONE}>Completed</option>
@@ -125,7 +130,7 @@ export function TaskForm({ task, projects, onSubmit, onCancel, isLoading = false
           <label htmlFor="priority" className="block text-sm font-medium text-text-secondary mb-1.5">
             Priority *
           </label>
-          <Select id="priority" {...register('priority')} disabled={isLoading}>
+          <Select id="priority" {...register('priority')} value={priorityValue} disabled={isLoading}>
             <option value={TaskPriority.LOW}>Low</option>
             <option value={TaskPriority.MEDIUM}>Medium</option>
             <option value={TaskPriority.HIGH}>High</option>
@@ -150,7 +155,7 @@ export function TaskForm({ task, projects, onSubmit, onCancel, isLoading = false
           <label htmlFor="projectId" className="block text-sm font-medium text-text-secondary mb-1.5">
             Project *
           </label>
-          <Select id="projectId" {...register('projectId')} disabled={isLoading}>
+          <Select id="projectId" {...register('projectId')} value={projectIdValue} disabled={isLoading}>
             <option value="" disabled>Select a project</option>
             {projects.map((project) => (
               <option key={project.id} value={project.id}>

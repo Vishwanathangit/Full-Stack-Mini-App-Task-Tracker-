@@ -6,8 +6,43 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import TasksPage from './pages/TasksPage';
 import ProjectsPage from './pages/ProjectsPage';
+import { useEffect, useState } from 'react';
+import { getMe } from './api/auth';
+import { useAuthStore } from './store/authStore';
+import { LoadingSpinner } from './components/common/LoadingSpinner';
 
 function App() {
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const setUser = useAuthStore((state) => state.setUser);
+  const clearUser = useAuthStore((state) => state.clearUser);
+
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        const userDetails = await getMe();
+        setUser({
+          id: '',
+          username: userDetails.username,
+          role: userDetails.role,
+          createdAt: new Date().toISOString(),
+        });
+      } catch (err) {
+        clearUser();
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    verifySession();
+  }, [setUser, clearUser]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>

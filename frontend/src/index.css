@@ -46,24 +46,24 @@
 }
 
 :root {
-  /* Premium Dark Navy & Slate Theme */
-  --background: #080c14;
-  --surface: #0f172a;
-  --surface-raised: #1e293b;
+  /* Improved Professional Dark Theme */
+  --background: #070b14;
+  --surface: #0d1117;
+  --surface-raised: #161b27;
 
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
+  --primary: #4f8ef7;
+  --primary-hover: #3b7de8;
 
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --success: #2ea84a;
+  --warning: #d97706;
+  --danger: #dc2626;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  --text-primary: #e6edf3;
+  --text-secondary: #7d8590;
+  --text-muted: #3d444d;
 
-  --border: #1e293b;
-  --border-focus: #3b82f6;
+  --border: #1e2430;
+  --border-focus: #4f8ef7;
 
   --r-sm: 0.25rem;
   --r-md: 0.5rem;

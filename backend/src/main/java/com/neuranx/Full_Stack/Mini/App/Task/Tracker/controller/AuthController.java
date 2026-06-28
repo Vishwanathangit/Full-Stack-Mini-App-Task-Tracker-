@@ -3,6 +3,7 @@ package com.neuranx.Full_Stack.Mini.App.Task.Tracker.controller;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.dto.AuthResponse;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.dto.LoginRequest;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.dto.RegisterRequest;
+import com.neuranx.Full_Stack.Mini.App.Task.Tracker.entity.Role;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.entity.User;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.security.JwtUtil;
 import com.neuranx.Full_Stack.Mini.App.Task.Tracker.service.AuthService;
@@ -67,5 +68,24 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         setJwtCookie(response, "", 0);
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getMe() {
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+        }
+        String username = auth.getName();
+        String roleStr = auth.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_USER");
+        try {
+            Role role = Role.valueOf(roleStr);
+            return ResponseEntity.ok(new AuthResponse(username, role));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok(new AuthResponse(username, Role.ROLE_USER));
+        }
     }
 }

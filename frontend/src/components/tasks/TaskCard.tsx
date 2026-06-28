@@ -29,13 +29,26 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   const getPriorityVariant = (priority: TaskPriority) => {
     switch (priority) {
       case TaskPriority.LOW:
-        return 'secondary';
+        return 'outline'; // will apply custom text-text-secondary
       case TaskPriority.MEDIUM:
-        return 'warning';
+        return 'warning'; // will apply custom text-warning
       case TaskPriority.HIGH:
-        return 'destructive';
+        return 'destructive'; // will apply custom text-danger
       default:
         return 'outline';
+    }
+  };
+
+  const getPriorityClass = (priority: TaskPriority) => {
+    switch (priority) {
+      case TaskPriority.LOW:
+        return 'text-text-secondary border-border/50 bg-transparent';
+      case TaskPriority.MEDIUM:
+        return 'text-warning border-warning/20 bg-warning/5';
+      case TaskPriority.HIGH:
+        return 'text-danger border-danger/20 bg-danger/5';
+      default:
+        return '';
     }
   };
 
@@ -54,7 +67,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           <Badge variant={getStatusVariant(task.status)}>
             {TASK_STATUS_LABELS[task.status]}
           </Badge>
-          <Badge variant={getPriorityVariant(task.priority)}>
+          <Badge className={getPriorityClass(task.priority)} variant={getPriorityVariant(task.priority)}>
             {TASK_PRIORITY_LABELS[task.priority]}
           </Badge>
         </div>
